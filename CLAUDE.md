@@ -75,6 +75,23 @@ CDN-fetched libraries permitted **only if all of these hold**:
 - Backlog lives on GitHub Issues at `javatarz/corpus-watch`. Refer to issues by number; do not introduce a new local backlog file.
 - **Proactively prompt for ADRs.** When a decision in conversation matches ADR criteria — alternatives debated, hard to reverse, encodes a non-obvious constraint, or a future contributor will ask "why this way?" — surface it before moving on. Suggest writing one and propose the ADR title. Do not silently let a decision-shaped conversation pass without capture. See [docs/adr/README.md](docs/adr/README.md) for criteria and template.
 
+## Story shape — INVEST + vertical slicing
+
+Every backlog card must be:
+
+- **Independent** — minimal cross-card ordering; no "must do X first" trains.
+- **Negotiable** — body lists scope but invites trade-offs.
+- **Valuable** — a real user can demo the outcome. No "schema PR", no "skeleton PR", no horizontal layer cards.
+- **Estimable** — sized XS/S/M/L; if you can't size it, it's underspecified.
+- **Small** — L is the ceiling. Anything bigger gets split.
+- **Testable** — acceptance is observable behaviour, not "tests pass".
+
+And **vertically sliced** — each card cuts thin through every layer it touches (DB → API → UI → Docker), delivering one user-observable behaviour. The first slice pays the infra tax (skeletons, baseline migration, compose file). Later slices extend each layer as features earn it. No layer-only foundation cards; if a card is "set up X", it's wrong — fold it into the first slice that needs X.
+
+Reuse card numbers when scope drifts; empty obsolete cards into shells with title `TBD` and label `available` rather than closing.
+
+When grooming or proposing cards, apply this shape without being asked. Reject horizontal-layer cards on sight.
+
 ## Repo layout
 
 ```
