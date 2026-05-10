@@ -72,7 +72,7 @@ CDN-fetched libraries permitted **only if all of these hold**:
 - Plan before implementing for non-trivial tasks.
 - When recommending a library or feature, verify it exists and fits — don't trust training-data memory.
 - Prefer editing files over creating; prefer simple over abstract.
-- Backlog lives on GitHub Issues once the repo is up. Refer to issues, not the temporary `BACKLOG.md`.
+- Backlog lives on GitHub Issues at `javatarz/corpus-watch`. Refer to issues by number; do not introduce a new local backlog file.
 - **Proactively prompt for ADRs.** When a decision in conversation matches ADR criteria — alternatives debated, hard to reverse, encodes a non-obvious constraint, or a future contributor will ask "why this way?" — surface it before moving on. Suggest writing one and propose the ADR title. Do not silently let a decision-shaped conversation pass without capture. See [docs/adr/README.md](docs/adr/README.md) for criteria and template.
 
 ## Repo layout
@@ -83,7 +83,6 @@ corpus-watch/
   README.md           # public-facing pitch + quickstart (created in repo-init card)
   LICENSE             # AGPL-3.0 (created in repo-init card)
   pyproject.toml      # (created in repo-init card)
-  BACKLOG.md          # TEMPORARY — migrated to GH issues, then deleted
   docs/
     VISION.md
     SCOPE.md
