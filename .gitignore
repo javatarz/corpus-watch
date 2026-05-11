@@ -28,12 +28,18 @@ dist/
 *.log
 *.tsbuildinfo
 
+# Integration test fixtures (contain personal financial data)
+tests/integration/fixtures/*.pdf
+
 # Database (corpus-watch SQLite files never committed)
 *.sqlite
 *.sqlite-journal
 *.sqlite-wal
 *.sqlite-shm
 *.db
+*.db-wal
+*.db-shm
+*.db-journal
 
 # OS
 .DS_Store

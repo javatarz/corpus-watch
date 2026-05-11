@@ -1,0 +1,29 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    ports:
+      - "${CORPUS_WATCH_PORT:-8000}:8000"
+    volumes:
+      - db-data:/data
+    environment:
+      CORPUS_WATCH_DB_PATH: /data/corpus_watch.db
+      CORPUS_WATCH_HOST: "0.0.0.0"
+      CORPUS_WATCH_PORT: "8000"
+    restart: unless-stopped
+
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile.web
+    ports:
+      - "${WEB_PORT:-5173}:5173"
+    environment:
+      VITE_API_URL: "http://localhost:${CORPUS_WATCH_PORT:-8000}"
+    depends_on:
+      - api
+    restart: unless-stopped
+
+volumes:
+  db-data:

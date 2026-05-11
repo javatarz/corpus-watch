@@ -2,110 +2,337 @@
   --text: #6b6375;
   --text-h: #08060d;
   --bg: #fff;
+  --surface: #f8f8f8;
   --border: #e5e4e7;
-  --code-bg: #f4f3ec;
   --accent: #aa3bff;
   --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
-
+  --danger: #dc2626;
+  --shadow: rgba(0, 0, 0, 0.1) 0 4px 16px;
   --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
 
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
+  font: 16px/150% var(--sans);
   color-scheme: light dark;
   color: var(--text);
   background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --text: #9ca3af;
     --text-h: #f3f4f6;
-    --bg: #16171d;
+    --bg: #111318;
+    --surface: #1c1e26;
     --border: #2e303a;
-    --code-bg: #1f2028;
     --accent: #c084fc;
     --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
+    --shadow: rgba(0, 0, 0, 0.5) 0 4px 24px;
   }
 }
+
+* { box-sizing: border-box; }
+
+body { margin: 0; }
+
+h1, h2 {
+  font-weight: 600;
+  color: var(--text-h);
+  margin: 0;
+}
+
+h1 { font-size: 36px; letter-spacing: -1px; }
+h2 { font-size: 20px; }
+
+p { margin: 0; }
+
+button {
+  cursor: pointer;
+  font: inherit;
+  border-radius: 6px;
+  padding: 8px 16px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-h);
+  transition: opacity 0.15s;
+}
+button:hover { opacity: 0.8; }
+button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+input[type="text"],
+input[type="password"] {
+  font: inherit;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text-h);
+  width: 100%;
+}
+input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+/* ── Layout ─────────────────────────────────────────── */
 
 #root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
   min-height: 100svh;
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100svh;
+  color: var(--text);
+}
+
+/* ── Setup screen ───────────────────────────────────── */
+
+.setup-screen {
   display: flex;
   flex-direction: column;
-  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
+  min-height: 100svh;
+  gap: 8px;
+  padding: 24px;
 }
 
-body {
-  margin: 0;
+.setup-screen p {
+  color: var(--text);
+  margin-bottom: 24px;
 }
 
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
+.setup-screen form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 360px;
+}
+
+.setup-screen label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.setup-screen button[type="submit"] {
+  margin-top: 8px;
+  background: var(--accent);
+  color: #fff;
+  border-color: transparent;
+  font-weight: 600;
+}
+
+/* ── Main app ───────────────────────────────────────── */
+
+.app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 48px 24px;
+  gap: 32px;
+}
+
+.app-header {
+  text-align: center;
+}
+
+.household-name {
+  display: block;
+  font-size: 14px;
+  color: var(--text);
+  margin-top: 4px;
+}
+
+.networth-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 32px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  min-width: 320px;
+  background: var(--surface);
+}
+
+.networth-amount {
+  font-size: 40px;
+  font-weight: 700;
   color: var(--text-h);
+  letter-spacing: -1px;
 }
 
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
+.networth-meta {
+  font-size: 14px;
+  color: var(--text);
 }
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
+
+/* ── Dropdown ───────────────────────────────────────── */
+
+.dropdown {
+  position: relative;
 }
-p {
+
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
   margin: 0;
+  padding: 4px;
+  list-style: none;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  min-width: 180px;
+  z-index: 10;
 }
 
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
+.dropdown-menu li { border-radius: 6px; }
+
+.dropdown-menu li button {
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: transparent;
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+
+.dropdown-menu li button:hover { background: var(--accent-bg); }
+
+.dropdown-menu li.disabled {
+  padding: 8px 12px;
+  color: var(--text);
+  opacity: 0.5;
+  font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.badge {
+  font-size: 11px;
+  color: var(--text);
+  background: var(--border);
   border-radius: 4px;
+  padding: 2px 6px;
+}
+
+/* ── Modal ──────────────────────────────────────────── */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 24px;
+}
+
+.modal {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  width: 100%;
+  max-width: 440px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 20px 0;
+}
+
+.modal-close {
+  border: none;
+  background: transparent;
+  padding: 4px 8px;
+  font-size: 16px;
+  color: var(--text);
+  border-radius: 4px;
+}
+
+.modal form {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.modal-footer button {
+  background: var(--accent);
+  color: #fff;
+  border-color: transparent;
+  font-weight: 600;
+}
+
+/* ── Modal fields ───────────────────────────────────── */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.field-hint {
+  font-size: 12px;
+  color: var(--text);
+  opacity: 0.7;
+}
+
+.field-error {
+  font-size: 13px;
+  color: var(--danger);
+}
+
+.file-name {
+  font-size: 13px;
+  color: var(--text);
+}
+
+/* ── Discard confirm ────────────────────────────────── */
+
+.discard-confirm {
+  padding: 24px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.discard-confirm p:first-child {
+  font-weight: 600;
   color: var(--text-h);
 }
 
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+.discard-sub {
+  font-size: 14px;
+  color: var(--text);
+}
+
+.discard-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.btn-danger {
+  background: var(--danger) !important;
+  color: #fff !important;
+  border-color: transparent !important;
 }
