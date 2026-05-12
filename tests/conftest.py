@@ -1,8 +1,17 @@
 from collections.abc import Generator
-from typing import Any
 from unittest.mock import patch
 
 import pytest
+from casparser.enums import CASFileType, FileType, TransactionType
+from casparser.types import (
+    CASData,
+    Folio,
+    InvestorInfo,
+    Scheme,
+    SchemeValuation,
+    StatementPeriod,
+    TransactionData,
+)
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy.pool import StaticPool
@@ -13,61 +22,51 @@ from corpus_watch.main import app
 from corpus_watch.models import AssetClass
 
 # ---------------------------------------------------------------------------
-# Fixture CAS data — mirrors casparser's dict output shape
+# Fixture CAS data — typed CASData object matching casparser 0.8+ output
 # ---------------------------------------------------------------------------
-CAS_DATA: dict[str, Any] = {
-    "statement_period": {"from": "2024-01-01", "to": "2024-12-31"},
-    "file_type": "CAMS",
-    "cas_type": "DETAILED",
-    "investor_info": {
-        "name": "Test User",
-        "email": "test@example.com",
-        "mobile": "",
-        "address": "",
-    },
-    "folios": [
-        {
-            "folio": "12345678/89",
-            "amc": "Test AMC",
-            "PAN": "XXXXX1234X",
-            "KYC": "OK",
-            "PANKYC": "OK",
-            "schemes": [
-                {
-                    "scheme": "Test MF Direct Growth",
-                    "isin": "INF123456789",
-                    "amfi": "000001",
-                    "advisor": "",
-                    "rta_code": "TEST",
-                    "rta": "CAMS",
-                    "type": "EQUITY",
-                    "nominees": [],
-                    "open": 0.0,
-                    "close": 100.0,
-                    "close_calculated": 100.0,
-                    "valuation": {
-                        "date": "2024-12-31",
-                        "nav": 123.456,
-                        "value": 12345.60,
-                        "cost": 10000.00,
-                    },
-                    "transactions": [
-                        {
-                            "date": "2024-01-15",
-                            "description": "Purchase",
-                            "amount": 10000.00,
-                            "units": 100.0,
-                            "nav": 100.0,
-                            "balance": 100.0,
-                            "type": "PURCHASE",
-                            "dividend_rate": None,
-                        }
+CAS_DATA = CASData(
+    statement_period=StatementPeriod(**{"from": "2024-01-01", "to": "2024-12-31"}),
+    investor_info=InvestorInfo(name="Test User", email="test@example.com", address="", mobile=""),
+    cas_type=CASFileType.DETAILED,
+    file_type=FileType.CAMS,
+    folios=[
+        Folio(
+            folio="12345678/89",
+            amc="Test AMC",
+            PAN="XXXXX1234X",
+            KYC="OK",
+            PANKYC="OK",
+            schemes=[
+                Scheme(
+                    scheme="Test MF Direct Growth",
+                    isin="INF123456789",
+                    amfi="000001",
+                    advisor="",
+                    rta_code="TEST",
+                    rta="CAMS",
+                    type="EQUITY",
+                    nominees=[],
+                    open=0.0,
+                    close=100.0,
+                    close_calculated=100.0,
+                    valuation=SchemeValuation(date="2024-12-31", nav=123.456, value=12345.60, cost=10000.00),
+                    transactions=[
+                        TransactionData(
+                            date="2024-01-15",
+                            description="Purchase",
+                            amount=10000.00,
+                            units=100.0,
+                            nav=100.0,
+                            balance=100.0,
+                            type=TransactionType.PURCHASE,
+                            dividend_rate=None,
+                        )
                     ],
-                }
+                )
             ],
-        }
+        )
     ],
-}
+)
 
 
 @pytest.fixture()
