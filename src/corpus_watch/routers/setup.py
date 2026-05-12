@@ -18,7 +18,11 @@ def get_setup(db: Session = Depends(get_db)) -> dict[str, object]:
     household = get_household(db)
     if household is None:
         return {"configured": False}
-    return {"configured": True, "household_name": household.name}
+    return {
+        "configured": True,
+        "household_name": household.name,
+        "individuals": [i.name for i in household.individuals],
+    }
 
 
 @router.post("/api/setup", status_code=201)

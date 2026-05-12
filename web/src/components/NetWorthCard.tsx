@@ -3,7 +3,6 @@ import { AddAssetsDropdown } from './AddAssetsDropdown'
 
 interface Props {
   data: NetWorth | null
-  householdName: string
   onOpenCasImport: () => void
 }
 
@@ -15,16 +14,11 @@ function formatInr(value: string): string {
   }).format(Number(value))
 }
 
-export function NetWorthCard({ data, householdName, onOpenCasImport }: Props) {
+export function NetWorthCard({ data, onOpenCasImport }: Props) {
   const hasData = data !== null && data.as_of !== null
 
   return (
     <>
-      <header className="app-header">
-        <h1>corpus-watch</h1>
-        <span className="household-name">{householdName}</span>
-      </header>
-
       <div className="networth-card">
         <h2>Net worth</h2>
         <div className="networth-amount">
@@ -42,3 +36,4 @@ export function NetWorthCard({ data, householdName, onOpenCasImport }: Props) {
     </>
   )
 }
+

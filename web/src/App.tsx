@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { getNetworth, getSetup } from './api'
 import type { NetWorth, SetupStatus } from './api'
+import { AppHeader } from './components/AppHeader'
 import { CasImportModal } from './components/CasImportModal'
 import { NetWorthCard } from './components/NetWorthCard'
 import { SetupScreen } from './components/SetupScreen'
@@ -36,21 +37,26 @@ export default function App() {
   }
 
   return (
-    <main className="app">
-      <NetWorthCard
-        data={networth}
+    <>
+      <AppHeader
         householdName={setup.household_name ?? ''}
-        onOpenCasImport={() => setShowCasModal(true)}
+        individuals={setup.individuals ?? []}
       />
-      {showCasModal && (
-        <CasImportModal
-          onClose={() => setShowCasModal(false)}
-          onImported={() => {
-            setShowCasModal(false)
-            getNetworth().then(setNetworth).catch(console.error)
-          }}
+      <main className="app">
+        <NetWorthCard
+          data={networth}
+          onOpenCasImport={() => setShowCasModal(true)}
         />
-      )}
-    </main>
+        {showCasModal && (
+          <CasImportModal
+            onClose={() => setShowCasModal(false)}
+            onImported={() => {
+              setShowCasModal(false)
+              getNetworth().then(setNetworth).catch(console.error)
+            }}
+          />
+        )}
+      </main>
+    </>
   )
 }
