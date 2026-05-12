@@ -1,6 +1,6 @@
 import hashlib
 import io
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import date
 from decimal import Decimal
 from typing import Any
@@ -22,6 +22,7 @@ from corpus_watch.repository import (
 class ImportResult:
     imported: int
     skipped: int
+    scheme_earliest_dates: dict[str, date] = field(default_factory=dict)
 
 
 def _identity_key(
@@ -53,6 +54,7 @@ def import_cas(db: Session, file_bytes: bytes, password: str, household: Househo
     individual = household.individuals[0]
     imported = 0
     skipped = 0
+    scheme_earliest_dates: dict[str, date] = {}
 
     for folio_data in data.folios:
         folio_num = folio_data.folio
@@ -69,6 +71,7 @@ def import_cas(db: Session, file_bytes: bytes, password: str, household: Househo
 
             asset.last_value = _to_decimal(scheme.valuation.value)
             asset.last_value_as_of = _to_date(scheme.valuation.date)
+            asset.close_units = _to_decimal(scheme.close)
 
             for txn in scheme.transactions:
                 txn_date = _to_date(txn.date)
@@ -88,8 +91,12 @@ def import_cas(db: Session, file_bytes: bytes, password: str, household: Househo
                     },
                 ):
                     imported += 1
+                    if amfi not in scheme_earliest_dates or txn_date < scheme_earliest_dates[amfi]:
+                        scheme_earliest_dates[amfi] = txn_date
                 else:
                     skipped += 1
 
     db.commit()
-    return ImportResult(imported=imported, skipped=skipped)
+    return ImportResult(
+        imported=imported, skipped=skipped, scheme_earliest_dates=scheme_earliest_dates
+    )

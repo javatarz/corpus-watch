@@ -1,4 +1,5 @@
 from collections.abc import Generator
+from typing import Any
 from unittest.mock import patch
 
 import pytest
@@ -49,7 +50,9 @@ CAS_DATA = CASData(
                     open=0.0,
                     close=100.0,
                     close_calculated=100.0,
-                    valuation=SchemeValuation(date="2024-12-31", nav=123.456, value=12345.60, cost=10000.00),
+                    valuation=SchemeValuation(
+                        date="2024-12-31", nav=123.456, value=12345.60, cost=10000.00
+                    ),
                     transactions=[
                         TransactionData(
                             date="2024-01-15",
@@ -100,6 +103,8 @@ def client(test_engine: Any, db_session: Session) -> Generator[TestClient]:
     with (
         patch("corpus_watch.main._run_migrations"),
         patch("corpus_watch.database.engine", test_engine),
+        patch("corpus_watch.routers.import_.backfill_scheme"),
+        patch("corpus_watch.routers.networth.refresh_stale_schemes"),
     ):
         app.dependency_overrides[get_db] = override_get_db
         with TestClient(app) as c:

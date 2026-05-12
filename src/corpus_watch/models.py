@@ -2,7 +2,7 @@ import uuid
 from datetime import UTC, date, datetime
 from decimal import Decimal
 
-from sqlalchemy import Date, DateTime, ForeignKey, String, UniqueConstraint
+from sqlalchemy import Date, DateTime, ForeignKey, Index, String, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from corpus_watch.database import Base, DecimalString
@@ -84,6 +84,7 @@ class Asset(Base):
     name: Mapped[str] = mapped_column(String, nullable=False)
     last_value: Mapped[Decimal | None] = mapped_column(DecimalString, nullable=True)
     last_value_as_of: Mapped[date | None] = mapped_column(Date, nullable=True)
+    close_units: Mapped[Decimal | None] = mapped_column(DecimalString, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=_now)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=_now, onupdate=_now)
 
@@ -107,3 +108,28 @@ class Transaction(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=_now)
 
     asset: Mapped[Asset] = relationship(back_populates="transactions")
+
+
+class PriceQuote(Base):
+    __tablename__ = "price_quotes"
+    __table_args__ = (UniqueConstraint("kind", "key", "ts", "source"),)
+
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=_uuid)
+    kind: Mapped[str] = mapped_column(String, nullable=False)
+    key: Mapped[str] = mapped_column(String, nullable=False)
+    ts: Mapped[date] = mapped_column(Date, nullable=False)
+    price: Mapped[Decimal] = mapped_column(DecimalString, nullable=False)
+    source: Mapped[str] = mapped_column(String, nullable=False)
+
+
+class RefreshLog(Base):
+    __tablename__ = "refresh_log"
+    __table_args__ = (Index("ix_refresh_log_scheme_finished", "scheme_code", "finished_at"),)
+
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=_uuid)
+    source: Mapped[str] = mapped_column(String, nullable=False)
+    scheme_code: Mapped[str] = mapped_column(String, nullable=False)
+    started_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=_now)
+    finished_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    status: Mapped[str | None] = mapped_column(String, nullable=True)
+    error: Mapped[str | None] = mapped_column(String, nullable=True)

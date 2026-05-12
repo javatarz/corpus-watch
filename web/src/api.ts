@@ -15,6 +15,8 @@ export interface NetWorth {
   total: string
   currency: string
   as_of: string | null
+  refreshing: boolean
+  last_refreshed: string | null
 }
 
 export interface ImportResult {
@@ -23,6 +25,17 @@ export interface ImportResult {
   total: string
   currency: string
   as_of: string | null
+}
+
+export interface NetWorthHistoryPoint {
+  date: string
+  total: string
+  [assetClass: string]: string
+}
+
+export interface NetWorthHistory {
+  series: NetWorthHistoryPoint[]
+  asset_classes: string[]
 }
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
@@ -46,6 +59,14 @@ export const postSetup = (payload: SetupPayload): Promise<void> =>
 
 export const getNetworth = (): Promise<NetWorth> =>
   request<NetWorth>('/api/networth')
+
+export const getNetworthHistory = (start?: string, end?: string): Promise<NetWorthHistory> => {
+  const params = new URLSearchParams()
+  if (start) params.set('start', start)
+  if (end) params.set('end', end)
+  const qs = params.toString()
+  return request<NetWorthHistory>(`/api/networth/history${qs ? `?${qs}` : ''}`)
+}
 
 export async function importCas(file: File, password: string): Promise<ImportResult> {
   const form = new FormData()
